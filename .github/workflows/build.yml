@@ -1,4 +1,4 @@
-﻿name: Build and deploy to Kuroco front
+name: Build and deploy to Kuroco front
 on:
   push:
     branches:
@@ -10,13 +10,13 @@ jobs:
   # for Pull Request (exclude merged)
   pullreq_build:
     name: Build(pullreq)
-    if: (github.repository == 'kanemoto-hifactory/sample-service-site' && github.event_name == 'issue_comment' && startsWith(github.event.comment.body, '/kuroco stage') && github.event.issue.pull_request != null)
+    if: (github.repository == 'kanemoto-hifactory/html' && github.event_name == 'issue_comment' && startsWith(github.event.comment.body, '/kuroco stage') && github.event.issue.pull_request != null)
     runs-on: ubuntu-latest
     steps:
       - name: "Get branch name and sha"
         id: get_branch
         run: |
-          PR=$(curl -H "Authorization: token 144863124ad514dcf275efebae3c0e87" https://hifactory-test-20210902.g.kuroco.app/direct/menu/github/?pr=${{ github.event.issue.pull_request.url }})
+          PR=$(curl -H "Authorization: token b7295ee26e765a40f37851fcf63f6c47" https://hifactory-test.g.kuroco.app/direct/menu/github/?pr=${{ github.event.issue.pull_request.url }})
           echo "::set-output name=branch::$(echo $PR | jq -r '.ref')"
           echo "::set-output name=sha::$(echo $PR | jq -r '.sha')"
       - name: Checkout Repo
@@ -46,14 +46,14 @@ jobs:
       - name: Webhook
         uses: diverta/workflow-webhook@v2
         env:
-          webhook_url: "https://hifactory-test-20210902.g.kuroco.app/direct/menu/github/"
-          webhook_secret: "144863124ad514dcf275efebae3c0e87"
-          data: '{"single_zip":"0","domain":"hifactory-test-20210902.g.kuroco-front.app","pr":"${{ github.event.issue.pull_request.url }}",  "repository":"${{ github.repository }}", "run_id":"${{ github.run_id }}", "hash":"${{ steps.get_branch.outputs.sha }}"}'
+          webhook_url: "https://hifactory-test.g.kuroco.app/direct/menu/github/"
+          webhook_secret: "b7295ee26e765a40f37851fcf63f6c47"
+          data: '{"single_zip":"0","domain":"hifactory-test.g.kuroco-front.app","pr":"${{ github.event.issue.pull_request.url }}",  "repository":"${{ github.repository }}", "run_id":"${{ github.run_id }}", "hash":"${{ steps.get_branch.outputs.sha }}"}'
           
   #for Push
   pushed_build:
     name: Build(pushed)
-    if: (github.repository == 'kanemoto-hifactory/sample-service-site' && (github.event_name == 'push' || github.event_name == 'workflow_dispatch'))
+    if: (github.repository == 'kanemoto-hifactory/html' && (github.event_name == 'push' || github.event_name == 'workflow_dispatch'))
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repo
@@ -79,6 +79,6 @@ jobs:
       - name: Webhook
         uses: diverta/workflow-webhook@v2
         env:
-          webhook_url: "https://hifactory-test-20210902.g.kuroco.app/direct/menu/github/"
-          webhook_secret: "144863124ad514dcf275efebae3c0e87"
-          data: '{"single_zip":"0","domain":"hifactory-test-20210902.g.kuroco-front.app", "repository":"${{ github.repository }}", "run_id":"${{ github.run_id }}", "hash":"${{ github.sha }}"}'
+          webhook_url: "https://hifactory-test.g.kuroco.app/direct/menu/github/"
+          webhook_secret: "b7295ee26e765a40f37851fcf63f6c47"
+          data: '{"single_zip":"0","domain":"hifactory-test.g.kuroco-front.app", "repository":"${{ github.repository }}", "run_id":"${{ github.run_id }}", "hash":"${{ github.sha }}"}'
